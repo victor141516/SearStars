@@ -29,10 +29,11 @@
                     </form>
                     <div v-if="stars.length > 0" class="mt-2">
                         <input
-                            v-model="searchText"
+                            v-model="inputSearchText"
                             type="text"
                             class="text-gray-800 focus:bg-gray-200 outline-none rounded-md shadow-sm py-2 px-4"
                             placeholder="Search"
+                            @input="updateSearchUrl"
                         />
                     </div>
                 </div>
@@ -120,7 +121,8 @@ export default defineComponent({
     data() {
         return {
             username: '',
-            searchText: '',
+            inputSearchText: '',
+            internalSearchText: '',
             stars: [] as IStarItem[],
             loading: false,
         }
@@ -128,14 +130,14 @@ export default defineComponent({
     computed: {
         filteredItems(): IStarItem[] {
             let filtered = [] as IStarItem[]
-            if (this.searchText === '') filtered = this.stars
+            if (this.internalSearchText === '') filtered = this.stars
             else {
                 filtered = this.stars.filter((i) => {
                     return (
-                        i.owner?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                        i.project?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                        i.description?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                        i.language?.toLowerCase().includes(this.searchText.toLowerCase())
+                        i.owner?.toLowerCase().includes(this.internalSearchText.toLowerCase()) ||
+                        i.project?.toLowerCase().includes(this.internalSearchText.toLowerCase()) ||
+                        i.description?.toLowerCase().includes(this.internalSearchText.toLowerCase()) ||
+                        i.language?.toLowerCase().includes(this.internalSearchText.toLowerCase())
                     )
                 })
             }
@@ -148,6 +150,10 @@ export default defineComponent({
     },
     mounted() {
         useRouter().beforeEach(async (to, from, next) => {
+            if (to.query.s) {
+                this.internalSearchText = to.query.s as string
+                this.inputSearchText = this.internalSearchText
+            }
             const username = Array.isArray(to.params.username) ? to.params.username[0] : to.params.username
             next()
             if (username) {
@@ -164,6 +170,11 @@ export default defineComponent({
                 this.stars = []
             }
         })
+    },
+    methods: {
+        updateSearchUrl() {
+            this.$router.push({ path: this.$route.path, query: { s: this.inputSearchText } })
+        },
     },
 })
 </script>
