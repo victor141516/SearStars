@@ -17,7 +17,7 @@
                         <input
                             v-model="username"
                             type="text"
-                            class="text-gray-800 focus:bg-gray-200 outline-none rounded-md shadow-sm p-2"
+                            class="text-gray-800 focus:bg-gray-200 outline-none rounded-md shadow-sm py-2 px-4"
                             placeholder="Username"
                         />
                         <button
@@ -31,7 +31,7 @@
                         <input
                             v-model="searchText"
                             type="text"
-                            class="text-gray-800 focus:bg-gray-200 outline-none rounded-md shadow-sm p-2"
+                            class="text-gray-800 focus:bg-gray-200 outline-none rounded-md shadow-sm py-2 px-4"
                             placeholder="Search"
                         />
                     </div>
