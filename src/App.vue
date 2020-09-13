@@ -127,17 +127,23 @@ export default defineComponent({
     },
     computed: {
         filteredItems(): IStarItem[] {
-            if (this.searchText === '') return this.stars
+            let filtered = [] as IStarItem[]
+            if (this.searchText === '') filtered = this.stars
             else {
-                return this.stars.filter((i) => {
+                filtered = this.stars.filter((i) => {
                     return (
-                        i.owner.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                        i.project.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                        i.description.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                        i.owner?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                        i.project?.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                        i.description?.toLowerCase().includes(this.searchText.toLowerCase()) ||
                         i.language?.toLowerCase().includes(this.searchText.toLowerCase())
                     )
                 })
             }
+
+            return filtered.filter(
+                (el, index, all) =>
+                    all.findIndex((ell) => ell.owner === el.owner && ell.project === el.project) === index,
+            )
         },
     },
     mounted() {
