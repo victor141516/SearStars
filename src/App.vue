@@ -80,7 +80,7 @@ async function* getStars(username: string): AsyncGenerator<IStarItem> {
         const owner = i.owner.login
         const project = i.name
         const description = i.description
-        const language = i.language
+        const language = i.language ?? 'Other'
         const stars = i.stargazers_count
         const forks = i.forks_count
         const updatedDate = DateTime.fromISO(i.updated_at)

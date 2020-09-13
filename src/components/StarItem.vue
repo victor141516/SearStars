@@ -49,7 +49,7 @@ export default defineComponent({
     },
     computed: {
         languageColor(): string {
-            const code = ((this.projectData.language ?? 'Other') as string)
+            const code = (this.projectData.language as string)
                 .split('')
                 .map((c) => c.charCodeAt(0))
                 .reduce((n, sum) => sum + n, 0)
