@@ -1,0 +1,30 @@
+{
+  "name": "SearStars",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "vite build",
+    "lint": "npx eslint \"src/**/*.{ts,vue}\"",
+    "dev": "vite --port 8124",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "dependencies": {
+    "luxon": "^1.25.0",
+    "vue": "^3.0.0-rc.10",
+    "vue-router": "^4.0.0-beta.9"
+  },
+  "devDependencies": {
+    "@types/luxon": "^1.24.4",
+    "@typescript-eslint/eslint-plugin": "^4.1.1-alpha.7",
+    "@typescript-eslint/parser": "^4.1.1-alpha.7",
+    "@vue/compiler-sfc": "^3.0.0-rc.10",
+    "eslint": "^7.8.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-vue": "^7.0.0-beta.3",
+    "sass": "^1.26.10",
+    "typescript": "^4.0.2",
+    "vite": "^1.0.0-rc.4",
+    "vue-cli-plugin-tailwind": "~1.4.2"
+  }
+}

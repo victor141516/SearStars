@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "es5",
+        "module": "esnext",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "declaration": false,
+        "sourceMap": true,
+        /* Strict Type-Checking Options */
+        "strict": true,
+        "noImplicitAny": true,
+        /* Module Resolution Options */
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "typeRoots": [
+            "./node_modules/vite/dist/"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.vue"
+    ]
+}
