@@ -152,8 +152,10 @@ export default defineComponent({
         useRouter().beforeEach(async (to, from, next) => {
             if (to.query.s) {
                 this.internalSearchText = to.query.s as string
-                this.inputSearchText = this.internalSearchText
+            } else {
+                this.internalSearchText = ''
             }
+            this.inputSearchText = this.internalSearchText
             const username = Array.isArray(to.params.username) ? to.params.username[0] : to.params.username
             next()
             if (username) {
