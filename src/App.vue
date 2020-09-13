@@ -7,11 +7,11 @@
                         <h1 class="text-3xl text-gray-800">Search an user GitHub stars</h1>
                     </div>
                 </a>
-                <div class="mt-10 flex-1 flex">
+                <div class="mt-8 flex-1 flex flex-wrap">
                     <form
                         method="get"
                         :action="`/${username}`"
-                        class="flex-1 self-start flex"
+                        class="flex-1 self-start flex mt-2"
                         @submit.prevent="$router.push(`/${username}`)"
                     >
                         <input
@@ -27,7 +27,7 @@
                             Get
                         </button>
                     </form>
-                    <div v-if="stars.length > 0">
+                    <div v-if="stars.length > 0" class="mt-2">
                         <input
                             v-model="searchText"
                             type="text"
