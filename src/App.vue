@@ -77,17 +77,17 @@
 </template>
 
 <script lang="ts">
-import { DateTime } from "luxon";
-import { defineComponent } from "vue";
+import { DateTime } from 'luxon'
+import { defineComponent } from 'vue'
 import {
   NavigationGuardNext,
   RouteLocationNormalized,
   useRouter,
-} from "vue-router";
+} from 'vue-router'
 
-import Loader from "./components/Loader.vue";
-import StarItem from "./components/StarItem.vue";
-import { IRawGitHubResponse, IStarItem } from "./interfaces";
+import Loader from './components/Loader.vue'
+import StarItem from './components/StarItem.vue'
+import { IRawGitHubResponse, IStarItem } from './interfaces'
 
 class GitHubRateLimitError {
   constructor(public timeout: number) {}
@@ -97,10 +97,10 @@ const _fetch = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((r) => {
     if (r.status === 403)
       throw new GitHubRateLimitError(
-        Number.parseInt(r.headers.get("X-Ratelimit-Reset")!)
-      );
-    return r;
-  });
+        Number.parseInt(r.headers.get('X-Ratelimit-Reset')!)
+      )
+    return r
+  })
 
 async function* getStars(username: string): AsyncGenerator<IStarItem> {
   const { firstPage, pages } = (await _fetch(
@@ -109,22 +109,22 @@ async function* getStars(username: string): AsyncGenerator<IStarItem> {
     firstPage: r.json(),
     pages: Number.parseInt(
       r.headers
-        .get("link")
+        .get('link')
         ?.split('rel="next"')[1]
         .split('rel="last"')[0]
-        .split("?page=")[1]
-        .split(">")[0] ?? "0"
+        .split('?page=')[1]
+        .split('>')[0] ?? '0'
     ),
-  }))) as { firstPage: Promise<IRawGitHubResponse[]>; pages: number };
+  }))) as { firstPage: Promise<IRawGitHubResponse[]>; pages: number }
 
   const translate = (i: IRawGitHubResponse): IStarItem => {
-    const owner = i.owner.login;
-    const project = i.name;
-    const description = i.description;
-    const language = i.language ?? "Other";
-    const stars = i.stargazers_count;
-    const forks = i.forks_count;
-    const updatedDate = DateTime.fromISO(i.updated_at);
+    const owner = i.owner.login
+    const project = i.name
+    const description = i.description
+    const language = i.language ?? 'Other'
+    const stars = i.stargazers_count
+    const forks = i.forks_count
+    const updatedDate = DateTime.fromISO(i.updated_at)
 
     return {
       owner,
@@ -134,11 +134,11 @@ async function* getStars(username: string): AsyncGenerator<IStarItem> {
       stars,
       forks,
       updatedDate,
-    };
-  };
+    }
+  }
 
   for (const item of await firstPage) {
-    yield translate(item);
+    yield translate(item)
   }
 
   const requests = new Array(pages)
@@ -147,32 +147,32 @@ async function* getStars(username: string): AsyncGenerator<IStarItem> {
       _fetch(
         `https://api.github.com/users/${username}/starred?page=${i + 1}`
       ).then((r) => r.json() as Promise<IRawGitHubResponse[]>)
-    );
+    )
 
-  const raws = (await Promise.all(requests)).flat();
+  const raws = (await Promise.all(requests)).flat()
   for (const i of raws) {
-    yield translate(i);
+    yield translate(i)
   }
 }
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: { Loader, StarItem },
   data() {
     return {
-      username: "",
-      inputSearchText: "",
-      internalSearchText: "",
+      username: '',
+      inputSearchText: '',
+      internalSearchText: '',
       stars: [] as IStarItem[],
       loading: false,
       rateLimitError: false,
-      rateLimitTime: "",
-    };
+      rateLimitTime: '',
+    }
   },
   computed: {
     filteredItems(): IStarItem[] {
-      let filtered = [] as IStarItem[];
-      if (this.internalSearchText === "") filtered = this.stars;
+      let filtered = [] as IStarItem[]
+      if (this.internalSearchText === '') filtered = this.stars
       else {
         filtered = this.stars.filter((i) => {
           return (
@@ -188,8 +188,8 @@ export default defineComponent({
             i.language
               ?.toLowerCase()
               .includes(this.internalSearchText.toLowerCase())
-          );
-        });
+          )
+        })
       }
 
       return filtered.filter(
@@ -197,7 +197,7 @@ export default defineComponent({
           all.findIndex(
             (ell) => ell.owner === el.owner && ell.project === el.project
           ) === index
-      );
+      )
     },
   },
   mounted() {
@@ -207,51 +207,51 @@ export default defineComponent({
       next: NavigationGuardNext
     ) => {
       if (to.query.s) {
-        this.internalSearchText = to.query.s as string;
+        this.internalSearchText = to.query.s as string
       } else {
-        this.internalSearchText = "";
+        this.internalSearchText = ''
       }
-      this.inputSearchText = this.internalSearchText;
+      this.inputSearchText = this.internalSearchText
       const username = Array.isArray(to.params.username)
         ? to.params.username[0]
-        : to.params.username;
-      next();
+        : to.params.username
+      next()
       if (username) {
-        this.username = username;
-        const stars = [];
-        this.loading = true;
+        this.username = username
+        const stars = []
+        this.loading = true
         try {
-          this.rateLimitError = false;
+          this.rateLimitError = false
           for await (const star of getStars(username)) {
-            stars.push(star);
+            stars.push(star)
           }
         } catch (e) {
           if (e instanceof GitHubRateLimitError) {
-            this.rateLimitError = true;
-            this.rateLimitTime = DateTime.fromSeconds(e.timeout).toRelative()!;
+            this.rateLimitError = true
+            this.rateLimitTime = DateTime.fromSeconds(e.timeout).toRelative()!
           } else {
-            throw e;
+            throw e
           }
         }
-        this.loading = false;
-        this.stars = stars;
+        this.loading = false
+        this.stars = stars
       } else {
-        this.username = "";
-        this.stars = [];
+        this.username = ''
+        this.stars = []
       }
-    };
+    }
 
-    const router = useRouter();
-    onRouteChange(router.currentRoute.value, null, () => {});
-    router.beforeEach(onRouteChange);
+    const router = useRouter()
+    onRouteChange(router.currentRoute.value, null, () => {})
+    router.beforeEach(onRouteChange)
   },
   methods: {
     updateSearchUrl() {
       this.$router.push({
         path: this.$route.path,
         query: { s: this.inputSearchText },
-      });
+      })
     },
   },
-});
+})
 </script>
