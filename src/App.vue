@@ -54,7 +54,11 @@
         <p class="sticky">
           You checked a few users and GitHub API limited your access 😔
         </p>
-        <p>Try again {{ rateLimitTime }}</p>
+        <p>
+          Try again {{ rateLimitTime }}. Or
+          <a :href="`https://github.com/${username}?tab=stars`">click here</a>
+          to check it on the (worse) GitHub page
+        </p>
       </div>
       <div v-else-if="stars.length > 0">
         <div class="mt-8 mx-auto pr-1" style="width: 95%">
